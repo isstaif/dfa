@@ -16,7 +16,7 @@
 #         print ss
 #         ss
 #       end
-#       
+#
 #       ary = [0,0,0,1,1,1,0,1,1,1,0,0].map do |a|
 #         d.eat a
 #       end
@@ -26,7 +26,7 @@
 # Download/contribute at GitHub[http://github.com/fugalh/dfa].
 
 # A deterministic finite automata is defined as: (S,E,d,s0,F)
-# where S is the set of states, E is the input alphabet, 
+# where S is the set of states, E is the input alphabet,
 # d is the transition function (d: S x E -> S), s0 is the initial state, and F
 # is the set of final states.
 #
@@ -37,7 +37,7 @@
 class DFA
   # d responds to call(state,input), returning the successive state.
   # It may do anything else that you want it to do; this is how transitional
-  # actions are implemented. 
+  # actions are implemented.
   attr :d, true
   # Final states. Responds to include?(state)
   attr :finals, true
@@ -73,27 +73,3 @@ class DFA
   end
 end
 
-if __FILE__ == $0
-  d = DFA.new('A', ['A','C'])
-  d.transition do |s,a|
-    ss = case [s, a]
-         when ['A', 0]: 'B'
-         when ['A', 1]: 'C'
-         when ['B', 0]: 'B'
-         when ['B', 1]: 'C'
-         when ['C', 0]: 'D'
-         when ['C', 1]: 'C'
-         when ['D', 0]: 'A'
-         when ['D', 1]: 'C'
-         else raise "Invalid transition (#{s}, #{a})"
-         end
-    print ss
-    ss
-  end
-
-  ary = [0,0,0,1,1,1,0,1,1,1,0,0].map do |a|
-    d.eat a
-  end
-  puts
-  p ary
-end
