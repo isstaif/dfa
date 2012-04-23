@@ -3,15 +3,10 @@ load 'nfa.rb'
 
 @nfa = NFA.new ["web","and"]
 
-puts("NFA Hash:\n")
-
 puts @nfa.hash
-
-puts("\nNFA Final states:\n")
 
 puts @nfa.final_states.to_s
 
-puts("\n")
 #we have the states S, W, E, B
 d = DFA.new([0], @nfa.final_states)
 @table = @nfa.hash
@@ -28,5 +23,4 @@ input = ['a','n','d', 'b','w','e'].map do |a|
   	puts d.state.to_s
  	end
 end
-puts("\n")
 
