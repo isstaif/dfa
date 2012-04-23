@@ -1,46 +1,26 @@
 load 'dfa.rb'
+load 'nfa.rb'
 
-keyword = "web"
+@nfa = NFA.new ["web","and"]
 
-@nfa = Hash.new
+puts @nfa.hash
 
-#an nfa
-@nfa = {
-  0 => Hash.new([0]).merge('w' => [0,1]),
-  1 => Hash.new([-1]).merge('e' => [2]),
-  2 => Hash.new([-1]).merge('b' => [3]),
-  3 => Hash.new([-1])
-}
-
-#initializing dfa
-@dfa = Hash.new
-
-@nfa.each do |state, transitions|
-  #puts "#{state} #{transitions}, default #{transitions.default}"
-  @dfa = @dfa.merge({state => 0})
-end
-
-puts @dfa
+puts @nfa.final_states.to_s
 
 #we have the states S, W, E, B
-d = DFA.new(0, [3])
-
-@table = Hash.new
-@table = { 0 => Hash.new(0).merge({'w' => 1}),
-           1 => Hash.new(0).merge({'e' => 2}),
-           2 => Hash.new(0).merge({'b' => 3}),
-           3 => Hash.new(0).merge({'b' => 3})
-         }
+d = DFA.new([0], @nfa.final_states)
+@table = @nfa.hash
 
 d.transition do |s,a|
+	#puts "s(#{s}) => a(#{a})"
   #puts "#{@table[s][a]}: " + @table.inspect
-  #print @table[s][a]
+  #puts @table[s][a].to_s
   @table[s][a]
 end
 
-ary = ['a','w','e', 'b'].map do |a|
-  d.eat a
+input = ['a','n','d', 'b','w','e'].map do |a|
+  if d.eat a
+  	puts d.state.to_s
+ 	end
 end
-
-puts ary.last
 
