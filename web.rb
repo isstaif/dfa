@@ -1,13 +1,17 @@
+require 'rubygems'  # allows for the loading of gems
+require 'graphviz'  # this loads the ruby-graphviz gem
+
+
 load 'dfa.rb'
 load 'nfa.rb'
 
 @nfa = NFA.new ["web","and"]
 
-puts("NFA Hash:\n")
+puts("Hash:\n")
 
 puts @nfa.hash
 
-puts("\nNFA Final states:\n")
+puts("\nFinal states:\n")
 
 puts @nfa.final_states.to_s
 
@@ -29,4 +33,46 @@ input = ['a','n','d', 'b','w','e'].map do |a|
  	end
 end
 puts("\n")
+
+
+# initialize new Graphviz graph
+g = GraphViz::new( "structs", "type" => "graph" )
+g[:rankdir] = "LR"
+
+# set global node options
+g.node[:color]    = "#ddaa66"
+g.node[:style]    = "filled"
+#g.node[:shape]    = "box"
+g.node[:penwidth] = "1"
+g.node[:fontname] = "Trebuchet MS"
+g.node[:fontsize] = "8"
+g.node[:fillcolor]= "#ffeecc"
+g.node[:fontcolor]= "#775500"
+g.node[:margin]   = "0.0"
+
+# set global edge options
+g.edge[:color]    = "#999999"
+g.edge[:weight]   = "1"
+g.edge[:fontsize] = "6"
+g.edge[:fontcolor]= "#444444"
+g.edge[:fontname] = "Verdana"
+g.edge[:dir]      = "forward"
+g.edge[:arrowsize]= "0.5"
+
+
+# add nodes
+@nfa.hash.each do |key, value|
+puts "Key #{key.inspect} has value #{value.inspect}"
+source_node_name = key.to_s
+g.add_nodes(source_node_name).label = key.to_s
+value.each do |edge_label, target_node|
+puts "edge_label: #{edge_label.inspect} target_node #{target_node.inspect}"
+target_node_name = target_node.to_s
+g.add_edges(source_node_name, target_node_name).label = edge_label.to_s
+end
+end
+
+g.output(:png => "webtest1.png" )
+
+
 

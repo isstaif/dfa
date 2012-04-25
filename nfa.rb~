@@ -10,7 +10,7 @@ class NFA
 		keywords.each do |keyword|
 			add_keyword_nfa keyword
 		end
-		normalize
+		#normalize
   end
 
   def to_dfa
