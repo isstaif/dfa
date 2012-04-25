@@ -94,12 +94,14 @@ class NFA
 				unless @hash.has_key? array_of_transitions_for_letter
 
 					is_final_state = false
+					final_state_key =""
 
 					@final_states.each do |final_state|
 						#puts "Compared #{array_of_transitions_for_letter} with #{final_state}"
 						if (final_state.length == 1) && (array_of_transitions_for_letter.include?(final_state.first))
 							#puts "\ttrue"
 							is_final_state = true
+							final_state_key = final_state
 						end
 					end
 

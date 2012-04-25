@@ -5,20 +5,11 @@ require 'graphviz'  # this loads the ruby-graphviz gem
 load 'dfa.rb'
 load 'nfa.rb'
 
-@nfa = NFA.new ["web","ebay"]
+puts "Welcome, Enter the key words you wish to search for separated by space:"
+keywords = gets.chomp
+@nfa = NFA.new keywords.split(" ").to_a
 
-puts("Hash:\n")
 
-puts @nfa.hash
-
-puts("\nFinal states:\n")
-
-puts @nfa.final_states.to_s
-
-puts("\n")
-
-puts @nfa.hash[[0,5,3]].default
-puts ("\n")
 #we have the states S, W, E, B
 d = DFA.new([0], @nfa.final_states)
 @table = @nfa.hash
@@ -30,13 +21,24 @@ d.transition do |s,a|
   @table[s][a]
 end
 
-#input = ['a','n','d', 'b','w','e'].map do |a|
-#  if d.eat a
-#  	puts d.state.to_s
-#   puts "Hey! I've reached the word \"#{@nfa.final_states_index[d.state]}\""
-# 	end
-#end
-puts("\n")
+count = Hash.new(0)
+
+puts ("\nEnter the text please:\n")
+
+input = gets.chomp
+text = input
+input.gsub("\n", " ").chars.to_a.map do |a|
+    if d.eat a
+        count[@nfa.final_states_index[d.state]] = count[@nfa.final_states_index[d.state]] + 1
+    end
+end
+
+
+puts("\nKey words accourances:\n")
+count.each do |word, ocnum|
+    puts word.to_s+" "+ocnum.to_s
+end
+puts
 
 #visualizing the automat
 # initialize new Graphviz graph
@@ -67,7 +69,6 @@ g.edge[:arrowsize]= "0.5"
 
 # adding nodes
 @nfa.hash.each do |key, value|
-    puts "Key #{key.inspect} has value #{value.inspect}"
     source_node_name = key.to_s
 
     # putting double circles around final states
@@ -77,8 +78,8 @@ g.edge[:arrowsize]= "0.5"
     end
     
     g.add_nodes(source_node_name).label = key.to_s 
-    value.each do |edge_label, target_node| #connecting nodes with edges
-        puts "edge_label: #{edge_label.inspect} target_node #{target_node.inspect}"
+    #connecting nodes with edges
+    value.each do |edge_label, target_node| 
         target_node_name = target_node.to_s
         edge_label_str = edge_label.to_s
         g.add_edges(source_node_name, target_node_name).label = edge_label_str
@@ -88,7 +89,7 @@ g.edge[:arrowsize]= "0.5"
     
     
     default_node_name = @nfa.hash[key].default.to_s
-    g.add_edges(source_node_name, default_node_name).label = "sigma"
+    g.add_edges(source_node_name, default_node_name).label = "rest of alphapet"
 end
 
     
