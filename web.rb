@@ -33,6 +33,7 @@ end
 #input = ['a','n','d', 'b','w','e'].map do |a|
 #  if d.eat a
 #  	puts d.state.to_s
+#   puts "Hey! I've reached the word \"#{@nfa.final_states_index[d.state]}\""
 # 	end
 #end
 puts("\n")

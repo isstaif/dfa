@@ -3,10 +3,12 @@ class NFA
 
 	attr :hash
 	attr :final_states
+  attr :final_states_index
 
   def initialize(keywords)
  		@hash = {0 => Hash.new([0])}
  		@final_states = []
+ 		@final_states_index = Hash.new
 		keywords.each do |keyword|
 			add_keyword_nfa keyword
 		end
@@ -30,7 +32,8 @@ class NFA
 					@hash[0] = @hash[0].merge(keyword[0] => [0, offset + 1])
 				when keyword.length
 					@hash = @hash.merge({ (offset + i) => Hash.new([-1]) })
-					final_states.push [offset + i]
+					@final_states.push [offset + i]
+					@final_states_index	= @final_states_index.merge  [offset + i] => keyword
 					#@final_states_output_index.merge
 				else
 					@hash = @hash.merge({ (offset + i) => Hash.new([-1]).merge(keyword[i] => [offset + i+1]) })
@@ -102,6 +105,7 @@ class NFA
 
 					if is_final_state
 						@final_states.push array_of_transitions_for_letter
+						@final_states_index	= @final_states_index.merge  array_of_transitions_for_letter => @final_states_index[final_state_key]
 					end
 
 					mergeing array_of_transitions_for_letter
