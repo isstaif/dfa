@@ -10,7 +10,7 @@ class NFA
 		keywords.each do |keyword|
 			add_keyword_nfa keyword
 		end
-		#normalize
+		normalize
   end
 
   def to_dfa
@@ -30,7 +30,7 @@ class NFA
 					@hash[0] = @hash[0].merge(keyword[0] => [0, offset + 1])
 				when keyword.length
 					@hash = @hash.merge({ (offset + i) => Hash.new([-1]) })
-					@final_states.push [offset + i]
+					final_states.push [offset + i]
 					#@final_states_output_index.merge
 				else
 					@hash = @hash.merge({ (offset + i) => Hash.new([-1]).merge(keyword[i] => [offset + i+1]) })
@@ -40,11 +40,22 @@ class NFA
 	end
 
 	def normalize
+	    @hash = @hash.merge [0] => @hash[0]
+		
 		@hash.each do |key, value|
 			bombing key
-			@hash = @hash.merge [key] => value
-			@hash.delete key
+			unless key == [0]
+			    @hash.delete key
+			end
 		end
+		@hash.delete 0
+		tmp = []
+		@final_states.each do |state|		    
+		    unless state.length == 1
+		        tmp = tmp.push state
+		    end
+		end
+
 	end
 
 
